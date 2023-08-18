@@ -22,4 +22,4 @@ jobs:
           pip install -r requirements.txt
 #          pip install -e .
       - name: Run your tests
-        run: pytest test_login.py
+        run: pytest --env=ci test_login.py

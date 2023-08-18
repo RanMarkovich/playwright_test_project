@@ -12,6 +12,8 @@ class BrowserFactory:
         browser, context = None, None
         if self.env == 'local':
             self.configurations['headless'] = False
+        elif self.env == 'ci':
+            self.configurations['headless'] = True
             self.configurations['args'] = ["--start-maximized"]
             if type_ == 'chrome':
                 browser = self.p.chromium
