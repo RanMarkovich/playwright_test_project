@@ -1,5 +1,5 @@
 from playwright.sync_api import sync_playwright
-from pytest import fixture
+from pytest import fixture, hookimpl
 
 from browser_factory import BrowserFactory
 from pages.login import Login
@@ -13,6 +13,17 @@ def pytest_addoption(parser):
         default="local",
         help="env: local / qa / lab / prod"
     )
+
+
+@hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """helper method so request.node.rep_call.failed can be extracted on test teardown"""
+    # execute all other hooks to obtain the report object
+    outcome = yield
+    rep = outcome.get_result()
+    # set a report attribute for each phase of a call, which can
+    # be "setup", "call", "teardown"
+    setattr(item, "rep_" + rep.when, rep)
 
 
 @fixture
@@ -29,10 +40,15 @@ def browser(env):
 
 
 @fixture
-def page(browser):
+def page(request, browser):
     page = browser.new_page()
     page.goto('https://dashboard.oolo.io')
-    return page
+    yield page
+    try:
+        if request.node.rep_call.failed:
+            page.screenshot(path="screenshot.png", full_page=True)
+    except Exception as e:
+        print(f'failed to take screenshot - got error : {e}')
 
 
 @fixture
