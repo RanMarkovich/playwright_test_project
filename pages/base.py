@@ -7,5 +7,5 @@ class Base:
         self.page = page
 
     @staticmethod
-    def expect_element_to_be_visible(el: Locator, timeout: int = 60000):
+    def expect_element_to_be_visible(el: Locator, timeout: int = 20000):
         return expect(el).to_be_visible(timeout=timeout)
