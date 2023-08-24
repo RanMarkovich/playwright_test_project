@@ -19,6 +19,10 @@ class Login(Base):
     def submit_btn(self):
         return self.page.wait_for_selector('[type=submit]')
 
+    @property
+    def invalid_credentials_banner(self):
+        return self.page.locator('css=div.MuiAlert-message')
+
     def submit_login_form(self, email: str, password: str):
         self.email_field.fill(email)
         self.password_field.fill(password)
