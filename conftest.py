@@ -46,7 +46,8 @@ def page(request, browser):
     yield page
     try:
         if request.node.rep_call.failed:
-            page.screenshot(path="screenshot.png", full_page=True)
+            test_name = request.node.name
+            page.screenshot(path=f"{test_name}.png", full_page=True)
     except Exception as e:
         print(f'failed to take screenshot - got error : {e}')
 
